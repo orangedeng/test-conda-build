@@ -43,6 +43,7 @@ jobs:
 
   run-env:
     runs-on: macos-latest
+    needs: setup-conda
 
     steps:
       - name: Download conda environment artifact
@@ -55,4 +56,3 @@ jobs:
           mkdir -p unpacked-env
           tar -xzf test-env.tar.gz -C unpacked-env
           ls -l unpacked-env
-          
