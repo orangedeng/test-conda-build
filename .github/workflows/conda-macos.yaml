@@ -1,0 +1,58 @@
+name: Conda Environment Setup on macOS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  setup-conda:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: 3.10  # Specify the Python version you need
+          activate-environment: test-env
+          environment-file: ""
+
+      - name: Create and activate conda environment
+        run: |
+          conda install conda-pack
+          conda create -n test-env python=3.9 -y
+          conda activate test-env
+
+      - name: Install gpustack[all]
+        run: |
+          conda activate test-env
+          pip install 'gpustack[all]'
+          pwd
+          conda pack -n test-env -o test-env.tar.gz
+          ls -l test-env.tar.gz
+      - name: Upload conda environment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: conda-environment
+          path: test-env.tar.gz
+
+  run-env:
+    runs-on: macos-latest
+
+    steps:
+      - name: Download conda environment artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: conda-environment
+
+      - name: Unpack conda environment
+        run: |
+          mkdir -p unpacked-env
+          tar -xzf test-env.tar.gz -C unpacked-env
+          ls -l unpacked-env
+          
