@@ -35,7 +35,7 @@ jobs:
           conda activate test-env
           pip install 'gpustack[all]'
           pwd
-          conda pack -n test-env -o test-env.tar.gz
+          conda pack -n test-env -o test-env.tar.gz --ignore-editable-packages --include-python
           ls -l test-env.tar.gz
       - name: Upload conda environment artifact
         uses: actions/upload-artifact@v4
@@ -58,3 +58,5 @@ jobs:
           mkdir -p unpacked-env
           tar -xzf test-env.tar.gz -C unpacked-env
           ls -l unpacked-env
+          ./bin/python --version
+          ./bin/gpustack version
