@@ -25,11 +25,12 @@ jobs:
       - name: Create and activate conda environment
         run: |
           conda install conda-pack
-          conda create -n test-env python=3.9 -y
-          conda activate test-env
+          conda init
+          python --version
 
       - name: Install gpustack[all]
         run: |
+          
           conda activate test-env
           pip install 'gpustack[all]'
           pwd
